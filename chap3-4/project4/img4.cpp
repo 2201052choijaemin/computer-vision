@@ -1,24 +1,26 @@
-#include <opencv2/opencv.hpp>   // OpenCV ¶óÀÌºê·¯¸® Æ÷ÇÔ
-#include <iostream>             // Ç¥ÁØ ÀÔÃâ·Â ¶óÀÌºê·¯¸® Æ÷ÇÔ
-using namespace cv;             // cv ³×ÀÓ½ºÆäÀÌ½º »ç¿ë
-using namespace std;            // std ³×ÀÓ½ºÆäÀÌ½º »ç¿ë
+#include <opencv2/opencv.hpp>   // OpenCV ë¼ì´ë¸ŒëŸ¬ë¦¬ í¬í•¨
+#include <iostream>             // í‘œì¤€ ì…ì¶œë ¥ ë¼ì´ë¸ŒëŸ¬ë¦¬ í¬í•¨
+using namespace cv;             // cv ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
+using namespace std;            // std ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì‚¬ìš©
+
 int main()
 {
-    Mat img1 = imread("dog.bmp", IMREAD_COLOR); // dog.bmp ÀÌ¹ÌÁö¸¦ ÄÃ·¯·Î ÀĞ¾î¼­ img1¿¡ ÀúÀå
-    if (img1.empty()) { // ÀÌ¹ÌÁö°¡ Á¤»óÀûÀ¸·Î ·ÎµåµÇÁö ¾Ê¾Ò´ÂÁö È®ÀÎ
-        cerr << "Image load failed!" << endl; // ¿¡·¯ ¸Ş½ÃÁö Ãâ·Â
-        return -1; // ÇÁ·Î±×·¥ Á¾·á
+    Mat img1 = imread("dog.bmp", IMREAD_COLOR);   // ì´ë¯¸ì§€ íŒŒì¼ì„ ì»¬ëŸ¬ë¡œ ì½ì–´ì„œ img1ì— ì €ì¥
+    // ì´ë¯¸ì§€ê°€ ì •ìƒì ìœ¼ë¡œ ë¡œë“œë˜ì§€ ì•Šì•˜ì„ ê²½ìš°
+    if (img1.empty()) {
+        cerr << "Image load failed!" << endl; // ì—ëŸ¬ ë©”ì‹œì§€ ì¶œë ¥
+        return -1; // í”„ë¡œê·¸ë¨ ì¢…ë£Œ
     }
-    Rect face(91, 36, 90, 88); // ROI(°ü½É ¿µ¿ª) ¼³Á¤ (x=91, y=36, ³Êºñ=90, ³ôÀÌ=88)
-    Mat copy; // ROI ¿µ¿ªÀ» ÀúÀåÇÒ Mat °´Ã¼ ¼±¾ğ
-    img1(face).copyTo(copy); // face ¿µ¿ªÀ» copy º¯¼ö¿¡ º¹»ç (¿øº» º¸Á¸)
-    while (true) { // ¹«ÇÑ ¹İº¹ ·çÇÁ ½ÃÀÛ
-        img1(face) = Scalar(255, 0, 0); // ROI ¿µ¿ªÀ» ÆÄ¶õ»ö(BGR)À¸·Î Ã¤¿ò
-        imshow("img1", img1); // ÀÌ¹ÌÁö Ãâ·Â
-        if (waitKey(1000) == 'q') break; // 1ÃÊ ´ë±â ÈÄ 'q' ÀÔ·Â ½Ã ¹İº¹ Á¾·á
-        copy.copyTo(img1(face)); // ÀúÀåÇØµĞ ¿øº» ROI¸¦ ´Ù½Ã º¹¿ø
-        imshow("img1", img1); // ÀÌ¹ÌÁö Ãâ·Â
-        if (waitKey(1000) == 'q') break; // 1ÃÊ ´ë±â ÈÄ 'q' ÀÔ·Â ½Ã ¹İº¹ Á¾·á
+    Rect face(91, 36, 90, 88); // ê´€ì‹¬ ì˜ì—­(ROI) ì„¤ì • (x=91, y=36, ë„ˆë¹„=90, ë†’ì´=88)
+    Mat original = img1.clone();     // ì›ë³¸ ì´ë¯¸ì§€ë¥¼ ë³µì‚¬í•˜ì—¬ ì €ì¥ (ì›ë³¸ ë³´ì¡´ìš©)
+    Mat colored = img1.clone();   // ROIì— ìƒ‰ì„ ì…íŒ ì´ë¯¸ì§€ë¥¼ ë§Œë“¤ê¸° ìœ„í•´ ë³µì‚¬
+    colored(face) = Scalar(255, 0, 0);   // face ì˜ì—­ì„ íŒŒë€ìƒ‰(BGR: 255,0,0)ìœ¼ë¡œ ì±„ì›€
+    Mat imgs[2] = { original, colored }; // ë‘ ì´ë¯¸ì§€ë¥¼ ë°°ì—´ì— ì €ì¥ (0: ì›ë³¸, 1: ìƒ‰ì¹ ëœ ì´ë¯¸ì§€)
+    int idx = 0; // í˜„ì¬ ë³´ì—¬ì¤„ ì´ë¯¸ì§€ ì¸ë±ìŠ¤ (0 ë˜ëŠ” 1)
+    while (true) {
+        imshow("img1", imgs[idx]); // í˜„ì¬ ì¸ë±ìŠ¤ì— í•´ë‹¹í•˜ëŠ” ì´ë¯¸ì§€ë¥¼ í™”ë©´ì— ì¶œë ¥
+        if (waitKey(1000) == 'q') break; // 1ì´ˆ(1000ms) ëŒ€ê¸° í›„ 'q' í‚¤ê°€ ì…ë ¥ë˜ë©´ ë°˜ë³µ ì¢…ë£Œ
+        idx = (idx + 1) % 2;   // ì¸ë±ìŠ¤ë¥¼ 0ê³¼ 1 ì‚¬ì´ì—ì„œ ë²ˆê°ˆì•„ ë³€ê²½
     }
-    return 0; // ÇÁ·Î±×·¥ Á¤»ó Á¾·á
+    return 0; // í”„ë¡œê·¸ë¨ ì •ìƒ ì¢…ë£Œ
 }
