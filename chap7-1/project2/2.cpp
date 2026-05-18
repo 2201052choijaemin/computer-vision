@@ -11,7 +11,7 @@ int main(void)
         cerr << "Image load error!" << endl;
         return -1;
     }
-    float data[] = {1/9.f,1 / 9.f, 1 / 9.f, 1 / 9.f, 1 / 9.f, 1 / 9.f, 1 / 9.f, 1 / 9.f, 1 / 9.f};
+    float data[] = { -1,-1,-1,-1,9,-1,-1,-1,-1};
 
     Mat mask(3, 3, CV_32FC1, data);
     Mat dst;
